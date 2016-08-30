@@ -1,12 +1,12 @@
 *** Settings ***
 Documentation     Test case:
-...               1. Main UI　該功能主畫面項目名稱、對齊位置
-...               2. Verify data with DB　該功能主畫面Gridview
-...               3. PopupWindow Insert UI　新增視窗項目名稱
-...               4. PopupWindow Insert Function And Verify DB　新增資料後檢查DB
-...               5. PopupWindow Insert Function And Verify Query Button　新增資料後檢查主畫面Gridview
-...               6. Delete Record And Verify　DB刪除資料
-...               7. PopupWindow Update Function And Verify DB　修改視窗
+...               1. [Main UI]　Verify主畫面UI名稱正確性
+...               2. [Verify Query Result with DB]　Verify主畫面查詢結果各欄位資料與DB中資料是否一致
+...               3. [PopupWindow Insert UI]　Verify新增視窗UI名稱正確性
+...               4. [PopupWindow Insert Function And Verify DB]　Verify新增2筆資料→是否存入DB
+...               5. [PopupWindow Insert Function And Verify Query Button]　Verify新增2筆資料→查詢功能→是否呈現Web
+...               6. [Delete Record And Verify DB]　Verify新增2筆資料→刪除→是否移除於DB
+...               7. [PopupWindow Update Function And Verify DB]　Verify新增2筆資料→修改其中一筆→是否存入DB
 Test Setup        Login System
 Resource          ../DataBase.robot
 Resource          ../Library.robot
