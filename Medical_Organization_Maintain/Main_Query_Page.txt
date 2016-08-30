@@ -394,17 +394,6 @@ PopupWindow Update Function And Verify DB
     ...    ${TestData_Announcement_3}
     #[Teardown]    Close All Browsers
 
-Remark
-    \    ${Organization_Address}=    Run keyword if    "${Organization_Address}"==""    SPACE Convert To None    ${Organization_Address}
-    \    ...    ELSE    No Convert    ${Organization_Address}
-    \    Append To List    ${UI_List}    ${Organization_Address}
-    \    ${Contact_Phone}=    Run keyword if    "${Contact_Phone}"==""    SPACE Convert To None    ${Contact_Phone}
-    \    ...    ELSE    No Convert    ${Contact_Phone}
-    \    Append To List    ${UI_List}    ${Contact_Phone}
-    \    ${Contact_Email}=    Run keyword if    "${Contact_Email}"==""    SPACE Convert To None    ${Contact_Email}
-    \    ...    ELSE    No Convert    ${Contact_Email}
-    \    Append To List    ${UI_List}    ${Contact_Email}
-
 *** Keywords ***
 Login System
     Log    【Keywords】Login System
@@ -439,18 +428,6 @@ Query DB data by Nested loop
     \    ${Verify_List}    Convert To String    ${queryResults[${x}][${y}]}
     \    Append To List    ${DB_List}    ${Verify_List}
     [Return]    ${DB_List}
-
-SPACE Convert To None
-    [Arguments]    ${OriginString}
-    Log    【Keywords】SPACE Convert To None
-    #當沒有值時，DB呈現{null}，用RIDE抓出來呈現"None"．所以畫面上的值要None再跟DB比
-    ${Return_None}=    Convert To String    None
-    [Return]    ${Return_None}
-
-No Convert
-    [Arguments]    ${OriginString}
-    Log    【Keywords】No Convert
-    [Return]    ${OriginString}
 
 Fill Data on Update PopupWindow
     [Arguments]    ${Input_System_Code}    ${Input_Organization_Code}    ${Input_Organization_Name}    ${Input_Organization_Address}    ${Input_Contact_Phone}    ${Input_Contact_Email}
