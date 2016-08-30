@@ -207,8 +207,8 @@ Verify Query Result with DB
     Log    -----------------已取完UI_List---------------------------------
     Connect Database
     ${DB_List}    Create List
-    #${select_Basic_Hospital}=    Set Variable    select Top ${Get_Organization_Count} hospital_code, nhi_code, hospital_name, addr, phone, email from Basic_Hospital where active_flag = '1' ORDER BY hospital_name ASC
-    ${select_Basic_Hospital}=    Set Variable    select Top ${Get_Organization_Count} hospital_code, nhi_code, hospital_name, addr, phone, email, (CASE WHEN is_chk_hosp='Y' THEN is_chk_hosp ELSE '' END) is_chk_hosp from Basic_Hospital where active_flag = '1' ORDER BY hospital_name ASC
+    #當DB欄位值{null}時需要空字串''來比對
+    ${select_Basic_Hospital}=    Set Variable    select Top ${Get_Organization_Count} (CASE WHEN hospital_code IS NULL THEN '' ELSE hospital_code END) 系統內碼,(CASE WHEN nhi_code IS NULL THEN '' ELSE nhi_code END) 機構代碼,(CASE WHEN hospital_name IS NULL THEN '' ELSE hospital_name END) 機構名稱,(CASE WHEN addr IS NULL THEN '' ELSE addr END) 機構地址,(CASE WHEN phone IS NULL THEN '' ELSE phone END) 連絡電話,(CASE WHEN email IS NULL THEN '' ELSE email END) 連絡信箱,(CASE WHEN is_chk_hosp='Y' THEN is_chk_hosp ELSE '' END) is_chk_hosp from Basic_Hospital where active_flag = '1' ORDER BY hospital_name ASC
     ${queryResults}=    Query    ${select_Basic_Hospital}
     ${RowCount}    Row Count    ${select_Basic_Hospital}
     : FOR    ${x}    IN RANGE    0    ${RowCount}
