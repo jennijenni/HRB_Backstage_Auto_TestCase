@@ -350,14 +350,17 @@ Delete Record And Verify DB
     ...    1. 刪除時是否有顯是刪除兩筆資料資訊
     ...    2. 若有因現存資料FK參考到此醫療機構導致無法DELETE刪除時，則異動<Basic_Hospital.active_flag>={0}
     Log    Verify 測試刪除
+    ${Verify_Message}    Set Variable    是否確定刪除 2 筆資料 ?
     Connect Database
     Add Two Record In DB
-    ${Verify_Message}    Set Variable    是否確定刪除 2 筆資料 ?
-    Sleep    1
+    Log    「機構名稱」輸入關鍵字後Click「查詢」縮小可刪除資料的範圍，降低誤刪率
+    #Input Text    ${Organization_CodeName_Dropdown_ID}    ${TestData_Organization_Name_1}
+    Input Text    ${Organization_CodeName_Dropdown_ID}    _elisa_ON
+    Click Element    ${ID_Query_Button}
+    Sleep    2
     Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[1]/td[2]/div/img
     Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[2]/td[2]/div/img
     Click Element    ${ID_Delete_Button}
-    #Sleep    3
     Wait Until Element Is Visible    ${ID_DeleteMessage_TextView}    ${G_Wait_For_Element_Timeout}
     ${Get_DeleteMessage_TextView}=    Get Text    ${ID_DeleteMessage_TextView}
     Log    畫面上顯示${Get_DeleteMessage_TextView}
@@ -370,7 +373,7 @@ Delete Record And Verify DB
     Log    Verify 資料庫剛新增的兩筆資料是否被刪除成功
     Check If Not Exists In Database    ${queryBasic_Hospital_TestData_1}
     Check If Not Exists In Database    ${queryBasic_Hospital_TestData_2}
-    [Teardown]    Close All Browsers
+    #[Teardown]    Close All Browsers
 
 PopupWindow Update Function And Verify DB
     [Documentation]    Test case Description :
@@ -392,7 +395,7 @@ PopupWindow Update Function And Verify DB
     Log    Verify 驗證醫療機構維護跳窗是否能更新
     Fill Data on Update PopupWindow    ${TestData_System_Code_3}    ${TestData_Organization_Code_3}    ${TestData_Organization_Name_3}    ${TestData_Organization_Address_3}    ${TestData_Contact_Phone_3}    ${TestData_Contact_Email_3}
     ...    ${TestData_Announcement_3}
-    #[Teardown]    Close All Browsers
+    [Teardown]    Close All Browsers
 
 *** Keywords ***
 Login System
