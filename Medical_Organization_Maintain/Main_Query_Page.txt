@@ -1,0 +1,525 @@
+*** Settings ***
+Documentation     Test case:
+...               1. Main UI　該功能主畫面項目名稱、對齊位置
+...               2. Verify data with DB　該功能主畫面Gridview
+...               3. PopupWindow Insert UI　新增視窗項目名稱
+...               4. PopupWindow Insert Function And Verify DB　新增資料後檢查DB
+...               5. PopupWindow Insert Function And Verify Query Button　新增資料後檢查主畫面Gridview
+...               6. Delete Record And Verify　DB刪除資料
+...               7. PopupWindow Update Function And Verify DB　修改視窗
+Test Setup        Login System
+Resource          ../DataBase.robot
+Resource          ../Library.robot
+Resource          ../Login.robot
+Resource          ../Resource.robot
+Resource          DML.robot
+
+*** Variables ***
+${Wait_For_Element_5s_Timeout}    5 seconds
+${Wait_For_Element_10s_Timeout}    10 seconds
+${Wait_For_Element_15s_Timeout}    15 seconds
+${Entry_Button}    button-1016-btnIconEl
+${XPATH_Tab_Name}    html/body/div[5]/div[1]/div[1]/div[2]/div/div/div/a/span[1]    # 醫療機構維護 Tab
+${ID_Organization_Code_Div_Name}    basicHospitalSearchForm-1050_header_hd-textEl    # 醫療機構查詢 Div
+${ID_Organization_Code_TextView}    nhiCodeComboBox-1051-labelEl    # 機構代碼 label
+${ID_Organization_Name_TextView}    hospitalNameComboBox-1052-labelEl    # 機構名稱 label
+${Organization_Code_Dropdown_ID}    nhiCodeComboBox-1051-inputEl    # 機構代碼 Dropdown
+${Organization_CodeName_Dropdown_ID}    hospitalNameComboBox-1052-inputEl    #機構名稱 Dropdown
+${ID_Query_Button}    button-1054-btnInnerEl    #查詢按鈕
+${ID_Refill_Button}    button-1055-btnInnerEl    #重填按鈕
+${ID_Medical_Organization_Div_Name}    basicHospitalGrid-1056_header_hd-textEl    #醫療機構
+${ID_System_Code_Column_Name}    gridcolumn-1075-textEl    #系統內碼
+${ID_Organization_Code_Column_Name}    gridcolumn-1076-textEl    #機構代碼
+${ID_Organization_Name_Column_Name}    gridcolumn-1077-textEl    #機構名稱
+${ID_Organization_Address_Column_Name}    gridcolumn-1078-textEl    #機構地址
+${ID_Contact_Phone_Column_Name}    gridcolumn-1079-textEl    #連絡電話
+${ID_Contact_Email_Column_Name}    gridcolumn-1080-textEl    #聯絡信箱
+${ID_Support_Check_Healty_Column_Name}    booleancolumn-1081-textEl    #提供健檢服務
+${ID_Insert_Button}    button-1084-btnInnerEl    #新增按鈕
+${ID_Delete_Button}    button-1086-btnInnerEl    #刪除按鈕
+${XPATH_PopupWindow_Insert_Title}    html/body/div[10]/div[1]/div/div/div/div[1]/span    #Click 新增 button 後出現「醫療機構維護視窗」Title
+${XPATH_PopupWindow_Insert_Support_Check_Healty_TextView}    html/body/div[10]/div[2]/div/div/span/div/table[1]/tbody/tr/td[1]/label    #「醫療機構維護視窗」文字：提供健檢
+${XPATH_PopupWindow_Insert_System_Code_TextView}    html/body/div[10]/div[2]/div/div/span/div/table[2]/tbody/tr/td[1]/label    #「醫療機構維護視窗」文字：系統內碼
+${XPATH_PopupWindow_Insert_Organization_Code_TextView}    html/body/div[10]/div[2]/div/div/span/div/table[3]/tbody/tr/td[1]/label    #「醫療機構維護視窗」文字：機構代碼
+${XPATH_PopupWindow_Insert_Organization_Name_TextView}    html/body/div[10]/div[2]/div/div/span/div/table[4]/tbody/tr/td[1]/label    #「醫療機構維護視窗」文字：機構名稱
+${XPATH_PopupWindow_Insert_Organization_Address_TextView}    html/body/div[10]/div[2]/div/div/span/div/table[5]/tbody/tr/td[1]/label    #「醫療機構維護視窗」文字：機構地址
+${XPATH_PopupWindow_Insert_Contact_Phone_TextView}    html/body/div[10]/div[2]/div/div/span/div/table[6]/tbody/tr/td[1]/label    #「醫療機構維護視窗」文字：連絡電話
+${XPATH_PopupWindow_Insert_Contact_Email_TextView}    html/body/div[10]/div[2]/div/div/span/div/table[7]/tbody/tr/td[1]/label    #「醫療機構維護視窗」文字：聯絡信箱
+${XPATH_PopupWindow_Insert_Announcement_TextView}    html/body/div[10]/div[2]/div/div/span/div/table[8]/tbody/tr/td[1]/label    #「醫療機構維護視窗」文字：公告訊息
+${XPATH_PopupWindow_Insert_Support_Check_Healty_Checkobx}    html/body/div[10]/div[2]/div/div/span/div/table[1]/tbody/tr/td[2]/input    #「醫療機構維護視窗」Checkbox：提供健檢
+${XPATH_PopupWindow_Insert_System_Code_EditText}    html/body/div[10]/div[2]/div/div/span/div/table[2]/tbody/tr/td[2]/input    #「醫療機構維護視窗」輸入框：系統內碼
+${XPATH_PopupWindow_Insert_Organization_Code_EditText}    html/body/div[10]/div[2]/div/div/span/div/table[3]/tbody/tr/td[2]/input    #「醫療機構維護視窗」輸入框：機構代碼
+${XPATH_PopupWindow_Insert_Organization_Name_EditText}    html/body/div[10]/div[2]/div/div/span/div/table[4]/tbody/tr/td[2]/input    #「醫療機構維護視窗」輸入框：機構名稱
+${XPATH_PopupWindow_Insert_Organization_Address_EditText}    html/body/div[10]/div[2]/div/div/span/div/table[5]/tbody/tr/td[2]/textarea    #「醫療機構維護視窗」輸入框：機構地址
+${XPATH_PopupWindow_Insert_Contact_Phone_EditText}    html/body/div[10]/div[2]/div/div/span/div/table[6]/tbody/tr/td[2]/textarea    #「醫療機構維護視窗」輸入框：連絡電話
+${XPATH_PopupWindow_Insert_Contact_Email_EditText}    html/body/div[10]/div[2]/div/div/span/div/table[7]/tbody/tr/td[2]/textarea    #「醫療機構維護視窗」輸入框：聯絡信箱
+${XPATH_PopupWindow_Insert_Announcement_EditText}    html/body/div[10]/div[2]/div/div/span/div/table[8]/tbody/tr/td[2]/textarea    #「醫療機構維護視窗」輸入框：公告訊息
+${XPATH_PopupWindow_Insert_Insert_Button}    html/body/div[10]/div[3]/div/div/div[1]/div/a/span[1]    #「醫療機構維護視窗」新增 Button
+${XPATH_PopupWindow_Insert_Refill_Button}    html/body/div[10]/div[3]/div/div/div[3]/div/a/span[1]    #「醫療機構維護視窗」重填 Button
+${XPATH_PopupWindow_Insert_Close_Button}    html/body/div[10]/div[3]/div/div/div[4]/div/a/span[1]    #「醫療機構維護視窗」關閉 Button
+${TestData_System_Code_1}    _elisa_SC1    # 測試資料 系統內碼
+${TestData_Organization_Code_1}    _elisa_OC1    # 測試資料 機構代碼
+${TestData_Organization_Name_1}    _elisa_ON1    # 測試資料 機構名稱    (排序)
+${TestData_Organization_Address_1}    TestData_Organization_Address_1.    # 測試資料 機構地址
+${TestData_Contact_Phone_1}    TestData_Contact_Phone_1    # 測試資料 連絡電話
+${TestData_Contact_Email_1}    TestData_Contact_Email_1@yamail.com    # 測試資料    聯絡信箱
+${TestData_Announcement_1}    TestData_Announcement_1    # 測試資料    公告訊息
+${TestData_System_Code_2}    _elisa_SC2    # 測試資料 系統內碼
+${TestData_Organization_Code_2}    _elisa_OC2    # 測試資料 機構代碼
+${TestData_Organization_Name_2}    _elisa_ON2    # 測試資料 機構名稱    (排序)
+${TestData_Organization_Address_2}    TestData_Organization_Address_2    # 測試資料 機構地址
+${TestData_Contact_Phone_2}    TestData_Contact_Phone_2    # 測試資料 連絡電話
+${TestData_Contact_Email_2}    TestData_Contact_Email_2@yamail.com    # 測試資料    聯絡信箱
+${TestData_Announcement_2}    TestData_Announcement_2    # 測試資料    公告訊息
+${TestData_System_Code_3}    _elisa_SC3    # 測試資料 系統內碼
+${TestData_Organization_Code_3}    _elisa_OC3    # 測試資料 機構代碼
+${TestData_Organization_Name_3}    _elisa_ON3    # 測試資料 機構名稱    (排序)
+${TestData_Organization_Address_3}    TestData_Organization_Address_3    # 測試資料 機構地址
+${TestData_Contact_Phone_3}    TestData_Contact_Phone_3    # 測試資料 連絡電話
+${TestData_Contact_Email_3}    TestData_Contact_Email_3@yamail.com    # 測試資料    聯絡信箱
+${TestData_Announcement_3}    TestData_Announcement_3    # 測試資料    公告訊息
+${ID_DeleteMessage_TextView}    messagebox-1001-displayfield-inputEl
+${ID_DeleteMessage_Yes_Button}    button-1006
+${XPATH_DeleteMessage_No_Button}    html/body/div[10]/div[3]/div/div/div[3]/div/a/span[2]
+
+*** Test Cases ***
+Main UI
+    [Documentation]    Test case Steps :
+    ...    1. Login 系統
+    ...    2. Entry【醫療機構維護】功能頁
+    ...
+    ...    Verify Item:
+    ...    1. Check 顯示名稱正確性
+    ...    2. Check 對齊位置
+    Entry Main Page
+    Log    定義正確的顯示文字
+    ${Corrct_Tab_Name}=    Convert To String    醫療機構維護
+    ${Corrct_Organization_Code_Div_Name}=    Convert To String    醫療機構查詢
+    ${Corrct_Organization_Code_TextView}=    Convert To String    機構代碼:
+    ${Corrct_Organization_Name_TextView}=    Convert To String    機構名稱:
+    ${Corrct_Query_Button_Name}=    Convert To String    查詢
+    ${Corrct_Refill_Button_Name}=    Convert To String    重填
+    ${Corrct_Medical_Organization_Div_Name}=    Convert To String    醫療機構
+    ${Corrct_System_Code_Column_Name}=    Convert To String    系統內碼
+    ${Corrct_Organization_Code_Column_Name}=    Convert To String    機構代碼
+    ${Corrct_Organization_Name_Column_Name}=    Convert To String    機構名稱
+    ${Corrct_Organization_Address_Column_Name}=    Convert To String    機構地址
+    ${Corrct_Contact_Phone_Column_Name}=    Convert To String    聯絡電話
+    ${Corrct_Contact_Email_Column_Name}=    Convert To String    聯絡信箱
+    ${Corrct_Support_Check_Healty_Column_Name}=    Convert To String    提供健檢
+    ${Corrct_Insert_Button_Name}=    Convert To String    新增
+    ${Corrct_Delete_Button_Name}=    Convert To String    刪除
+    ${Verify_Align_Center}    Convert To String    text-align: center;
+    ${Verify_Align_Left}    Convert To String    text-align: left;
+    Log    擷取UI上的顯示文字
+    ${GetText_Tab}=    Get Text    xpath=${XPATH_Tab_Name}
+    ${GetText_Organization_Code_Div}=    Get Text    ${ID_Organization_Code_Div_Name}
+    ${GetText_Organization_Code}=    Get Text    ${ID_Organization_Code_TextView}
+    ${GetText_Organization_Name}=    Get Text    ${ID_Organization_Name_TextView}
+    ${GetText_Query_Button}=    Get Text    ${ID_Query_Button}
+    ${GetText_Refill_Button}=    Get Text    ${ID_Refill_Button}
+    ${GetText_Medical_Organization_Div}=    Get Text    ${ID_Medical_Organization_Div_Name}
+    ${GetText_System_Code_Column}=    Get Text    ${ID_System_Code_Column_Name}
+    ${GetText_Organization_Code_Column_Name}=    Get Text    ${ID_Organization_Code_Column_Name}
+    ${GetText_Organization_Name_Column_Name}=    Get Text    ${ID_Organization_Name_Column_Name}
+    ${GetText_Organization_Address_Column_Name}=    Get Text    ${ID_Organization_Address_Column_Name}
+    ${GetText_Contact_Phone_Column_Name}=    Get Text    ${ID_Contact_Phone_Column_Name}
+    ${GetText_Contact_Email_Column_Name}=    Get Text    ${ID_Contact_Email_Column_Name}
+    ${GetText_Support_Check_Healty_Column_Name}=    Get Text    ${ID_Support_Check_Healty_Column_Name}
+    ${GetText_Insert_Button}=    Get Text    ${ID_Insert_Button}
+    ${GetText_Delete_Button}=    Get Text    ${ID_Delete_Button}
+    Log    進行比對
+    Should Be Equal    ${Corrct_Tab_Name}    ${GetText_Tab}
+    Should Be Equal    ${Corrct_Organization_Code_Div_Name}    ${GetText_Organization_Code_Div}
+    Should Be Equal    ${Corrct_Organization_Code_TextView}    ${GetText_Organization_Code}
+    Should Be Equal    ${Corrct_Organization_Name_TextView}    ${GetText_Organization_Name}
+    Should Be Equal    ${Corrct_Query_Button_Name}    ${GetText_Query_Button}
+    Should Be Equal    ${Corrct_Refill_Button_Name}    ${GetText_Refill_Button}
+    Should Be Equal    ${Corrct_Medical_Organization_Div_Name}    ${GetText_Medical_Organization_Div}
+    Should Be Equal    ${Corrct_System_Code_Column_Name}    ${GetText_System_Code_Column}
+    Should Be Equal    ${Corrct_Organization_Code_Column_Name}    ${GetText_Organization_Code_Column_Name}
+    Should Be Equal    ${Corrct_Organization_Name_Column_Name}    ${GetText_Organization_Name_Column_Name}
+    Should Be Equal    ${Corrct_Organization_Address_Column_Name}    ${GetText_Organization_Address_Column_Name}
+    Should Be Equal    ${Corrct_Contact_Phone_Column_Name}    ${GetText_Contact_Phone_Column_Name}
+    Should Be Equal    ${Corrct_Contact_Email_Column_Name}    ${GetText_Contact_Email_Column_Name}
+    Should Be Equal    ${Corrct_Support_Check_Healty_Column_Name}    ${GetText_Support_Check_Healty_Column_Name}
+    Should Be Equal    ${Corrct_Insert_Button_Name}    ${GetText_Insert_Button}
+    Should Be Equal    ${Corrct_Delete_Button_Name}    ${GetText_Delete_Button}
+    Log    Verify［醫療機構］區塊，各欄位文字對齊
+    ${Get_System_Code_Align}=    Get Element Attribute    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr/td[4]/div@style
+    ${Get_Organization_Code_Align}=    Get Element Attribute    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr/td[5]/div@style
+    ${Get_Organization_Name_Align}=    Get Element Attribute    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr/td[6]/div@style
+    ${Get_Organization_Address_Align}=    Get Element Attribute    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr/td[7]/div@style
+    ${Get_Contact_Phone_Align}=    Get Element Attribute    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr/td[8]/div@style
+    ${Get_Contact_Email_Align}=    Get Element Attribute    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr/td[9]/div@style
+    ${Get_Support_Check_Healty_Align}=    Get Element Attribute    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr/td[10]/div@style
+    Should Be Equal    ${Verify_Align_Center}    ${Get_System_Code_Align}
+    Should Be Equal    ${Verify_Align_Center}    ${Get_Organization_Code_Align}
+    Should Be Equal    ${Verify_Align_Left}    ${Get_Organization_Name_Align}
+    Should Be Equal    ${Verify_Align_Left}    ${Get_Organization_Address_Align}
+    Should Be Equal    ${Verify_Align_Left}    ${Get_Contact_Phone_Align}
+    Should Be Equal    ${Verify_Align_Left}    ${Get_Contact_Email_Align}
+    Should Be Equal    ${Verify_Align_Center}    ${Get_Support_Check_Healty_Align}
+    [Teardown]    Close All Browsers
+
+Verify Query Result with DB
+    [Documentation]    <Basic_Hospital.hospital_code>←必填
+    ...    <Basic_Hospital.hospital_name>←必填
+    ...    UI其它欄位若呈現，用RIDE抓出來呈現" "
+    ...    DB其它欄位若呈現{null}，用RIDE抓出來呈現"None"
+    ...    DB其它欄位若呈現，用RIDE抓出來呈現""
+    ...
+    ...    Test case Steps :
+    ...    1. Login 系統
+    ...    2. Entry【醫療機構維護】功能頁
+    ...    3. 擷取［醫療機構］區塊第一頁的所有資料存入UI_List
+    ...    4. 從DB擷取與［醫療機構］區塊相對應的資料筆數，排序後存入DB_List
+    ...
+    ...    Verify Item:
+    ...    1. 比較UI_List == DB_List
+    Entry Main Page
+    ${UI_List}    Create List
+    ${Get_Organization_Count}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr
+    : FOR    ${INDEX}    IN RANGE    1    ${Get_Organization_Count}+1
+    \    Log    ${INDEX}
+    \    ${System_Code}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[4]/div
+    \    ${Organization_Code}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[5]/div
+    \    ${Organization_Name}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[6]/div
+    \    ${Organization_Address}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[7]/div
+    \    ${Contact_Phone}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[8]/div
+    \    ${Contact_Email}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[9]/div
+    \    ${Support_Check_Healty}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[10]/div
+    \    #    因${System_Code}是必填項, 故不檢查1個字元空白的可能性
+    \    ${Organization_Code}=    Strip String    ${Organization_Code}
+    \    #    因${Organization_Name}是必填項, 故不檢查1個字元空白的可能性
+    \    ${Organization_Address}=    Strip String    ${Organization_Address}
+    \    ${Contact_Phone}=    Strip String    ${Contact_Phone}
+    \    ${Contact_Email}=    Strip String    ${Contact_Email}
+    \    ${Support_Check_Healty}=    Strip String    ${Support_Check_Healty}
+    \    #    ${announcement}此欄位尚未建入DB
+    \    Append To List    ${UI_List}    ${System_Code}
+    \    Append To List    ${UI_List}    ${Organization_Code}
+    \    Append To List    ${UI_List}    ${Organization_Name}
+    \    Append To List    ${UI_List}    ${Organization_Address}
+    \    Append To List    ${UI_List}    ${Contact_Phone}
+    \    Append To List    ${UI_List}    ${Contact_Email}
+    \    Append To List    ${UI_List}    ${Support_Check_Healty}
+    Log    -----------------已取完UI_List---------------------------------
+    Connect Database
+    ${DB_List}    Create List
+    #${select_Basic_Hospital}=    Set Variable    select Top ${Get_Organization_Count} hospital_code, nhi_code, hospital_name, addr, phone, email from Basic_Hospital where active_flag = '1' ORDER BY hospital_name ASC
+    ${select_Basic_Hospital}=    Set Variable    select Top ${Get_Organization_Count} hospital_code, nhi_code, hospital_name, addr, phone, email, (CASE WHEN is_chk_hosp='Y' THEN is_chk_hosp ELSE '' END) is_chk_hosp from Basic_Hospital where active_flag = '1' ORDER BY hospital_name ASC
+    ${queryResults}=    Query    ${select_Basic_Hospital}
+    ${RowCount}    Row Count    ${select_Basic_Hospital}
+    : FOR    ${x}    IN RANGE    0    ${RowCount}
+    \    Log    第${x}次呼叫Query DB data by Nested loop
+    \    ${DB_List_Return}=    Query DB data by Nested loop    ${DB_List}    ${x}    ${select_Basic_Hospital}
+    Log    -----------------已取完DB_List_Return---------------------------------
+    Log    DB_List =${DB_List_Return}
+    Log    UI_List =${UI_List}
+    Should Be Equal    ${UI_List}    ${DB_List_Return}
+    [Teardown]    Close All Browsers
+
+PopupWindow Insert UI
+    [Documentation]    Test case Steps :
+    ...    1. Login 系統
+    ...    2. Entry【醫療機構維護】功能頁
+    ...    3. Click「新增」button to lauch 「醫療機構維護」視窗
+    ...    4. Check 顯示名稱正確性
+    ...
+    ...    Verify Item:
+    ...    醫療機構維護
+    ...    提供健檢:
+    ...    *系統內碼:
+    ...    機構代碼:
+    ...    *機構名稱:
+    ...    機構地址:
+    ...    連絡電話:
+    ...    聯絡信箱:
+    ...    公告訊息:
+    ...    新增
+    ...    刪除
+    Entry Insert/Edit Page
+    Log    定義正確的顯示文字
+    ${Corrct_PopupWindows_Title}=    Convert To String    醫療機構維護
+    ${Corrct_Support_Check_Healty_TextView}=    Convert To String    提供健檢:
+    ${Corrct_System_Code_TextView}=    Convert To String    *系統內碼:
+    ${Corrct_Organization_Code_TextView}=    Convert To String    機構代碼:
+    ${Corrct_Organization_Name_TextView}=    Convert To String    *機構名稱:
+    ${Corrct_Organization_Address_TextView}=    Convert To String    機構地址:
+    ${Corrct_Contact_Phone_TextView}=    Convert To String    聯絡電話:
+    ${Corrct_Contact_Email_TextView}=    Convert To String    聯絡信箱:
+    ${Corrct_Contact_Announcement_TextView}=    Convert To String    公告訊息:
+    ${Corrct_Insert_Button_Name}=    Convert To String    新增
+    ${Corrct_Refill_Button_Name}=    Convert To String    重填
+    Log    擷取UI上的顯示文字
+    ${GetText_PopupWindow_Title}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Title}
+    ${GetText_PopupWindow_Insert_Support_Check_Healty}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Support_Check_Healty_TextView}
+    ${GetText_PopupWindow_Insert_System_Code}=    Get Text    xpath=${XPATH_PopupWindow_Insert_System_Code_TextView}
+    ${GetText_PopupWindow_Insert_Organization_Code}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Organization_Code_TextView}
+    ${GetText_PopupWindow_Insert_Organization_Name}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Organization_Name_TextView}
+    ${GetText_PopupWindow_Insert_Organization_Address}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Organization_Address_TextView}
+    ${GetText_PopupWindow_Insert_Contact_Phone}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Contact_Phone_TextView}
+    ${GetText_PopupWindow_Insert_Contact_Email}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Contact_Email_TextView}
+    ${GetText_PopupWindow_Insert_Announcement}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Announcement_TextView}
+    ${GetText_Insert_Button}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Insert_Button}
+    ${GetText_Refill_Button}=    Get Text    xpath=${XPATH_PopupWindow_Insert_Refill_Button}
+    Log    進行比對
+    Should Be Equal    ${Corrct_PopupWindows_Title}    ${GetText_PopupWindow_Title}
+    Should Be Equal    ${Corrct_Support_Check_Healty_TextView}    ${GetText_PopupWindow_Insert_Support_Check_Healty}
+    Should Be Equal    ${Corrct_System_Code_TextView}    ${GetText_PopupWindow_Insert_System_Code}
+    Should Be Equal    ${Corrct_Organization_Code_TextView}    ${GetText_PopupWindow_Insert_Organization_Code}
+    Should Be Equal    ${Corrct_Organization_Name_TextView}    ${GetText_PopupWindow_Insert_Organization_Name}
+    Should Be Equal    ${Corrct_Organization_Address_TextView}    ${GetText_PopupWindow_Insert_Organization_Address}
+    Should Be Equal    ${Corrct_Contact_Phone_TextView}    ${GetText_PopupWindow_Insert_Contact_Phone}
+    Should Be Equal    ${Corrct_Contact_Email_TextView}    ${GetText_PopupWindow_Insert_Contact_Email}
+    Should Be Equal    ${Corrct_Contact_Announcement_TextView}    ${GetText_PopupWindow_Insert_Announcement}
+    Should Be Equal    ${Corrct_Insert_Button_Name}    ${GetText_Insert_Button}
+    Should Be Equal    ${Corrct_Refill_Button_Name}    ${GetText_Refill_Button}
+    [Teardown]    Close All Browsers
+
+PopupWindow Insert Function And Verify DB
+    [Documentation]    Test case Description :
+    ...    主要測試醫療機構新增兩筆資料
+    ...    1. 使用者點擊左上角醫療機構維護
+    ...    2. 使用者按下新增按鈕
+    ...    3. 畫面上顯示醫療機構維護跳窗
+    ...    4. 使用者在跳窗中的欄位填寫所有資料
+    ...    5. 使用者按下新增按鈕完成建立一筆資料
+    ...    6. 再重複步驟 2 ~ 5一次
+    ...
+    ...    Verify :
+    ...    新增的資料是否已存在在資料庫
+    Connect Database
+    Add Two Record In DB
+    ${queryBasic_Hospital_TestData_1}=    Set Variable    select * from Basic_Hospital where hospital_name ='${TestData_Organization_Name_1}' and addr='${TestData_Organization_Address_1}' and hospital_code='${TestData_System_Code_1}' and phone='${TestData_Contact_Phone_1}' and email='${TestData_Contact_Email_1}' and nhi_code='${TestData_Organization_Code_1}' and active_flag=1 and announcement='${TestData_Announcement_1}' and is_chk_hosp= 'Y'
+    ${queryBasic_Hospital_TestData_2}=    Set Variable    select * from Basic_Hospital where hospital_name ='${TestData_Organization_Name_2}' and addr='${TestData_Organization_Address_2}' and hospital_code='${TestData_System_Code_2}' and phone='${TestData_Contact_Phone_2}' and email='${TestData_Contact_Email_2}' and nhi_code='${TestData_Organization_Code_2}' and active_flag=1 and announcement='${TestData_Announcement_2}' and is_chk_hosp= 'N'
+    Log    Verify 資料庫是否有剛新增的兩筆資料
+    Check If Exists In DataBase    ${queryBasic_Hospital_TestData_1}
+    Check If Exists In DataBase    ${queryBasic_Hospital_TestData_2}
+    [Teardown]    Close All Browsers
+
+PopupWindow Insert Function And Verify Query Button
+    [Documentation]    Test case Description :
+    ...    主要測試醫療機構新增兩筆資料
+    ...    1. 使用者點擊左上角醫療機構維護
+    ...    2. 使用者按下新增按鈕
+    ...    3. 畫面上顯示醫療機構維護跳窗
+    ...    4. 使用者在跳窗中的欄位填寫所有資料
+    ...    5. 使用者按下新增按鈕完成建立一筆資料
+    ...    6. 再重複步驟 2 ~ 5一次
+    ...
+    ...    Verify :
+    ...    1. 「機構代碼」輸入關鍵字後Click「查詢」，檢查查詢結果中某欄位是否正確
+    ...    2. 「機構名稱」輸入關鍵字後Click「查詢」，檢查查詢結果中某欄位是否正確
+    ...    3. 不輸入關鍵字Click「查詢」，檢查查詢結果中某欄位是否正確
+    Connect Database
+    Add Two Record In DB
+    Log    「機構代碼」輸入關鍵字後Click「查詢」，檢查查詢結果中某欄位是否正確
+    Input Text    ${Organization_Code_Dropdown_ID}    ${TestData_Organization_Code_1}
+    Click Element    ${ID_Query_Button}
+    Sleep    2
+    ${Get_Organization_Code}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[1]/td[5]/div
+    Should Be Equal    ${TestData_Organization_Code_1}    ${Get_Organization_Code}
+    Log    「機構名稱」輸入關鍵字後Click「查詢」，檢查查詢結果中某欄位是否正確
+    Input Text    ${Organization_CodeName_Dropdown_ID}    ${TestData_Organization_Name_1}
+    Click Element    ${ID_Query_Button}
+    Sleep    2
+    ${Get_Organization_CodeName}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[1]/td[6]/div
+    Should Be Equal    ${TestData_Organization_Name_1}    ${Get_Organization_CodeName}
+    Log    不輸入關鍵字Click「查詢」，檢查查詢結果中某欄位是否正確
+    Input Text    ${Organization_Code_Dropdown_ID}    ${EMPTY}
+    Click Element    ${ID_Query_Button}
+    Sleep    2
+    Should Be Equal    ${TestData_Organization_Name_1}    ${Get_Organization_CodeName}
+    [Teardown]    Close All Browsers
+
+Delete Record And Verify DB
+    [Documentation]    Test case Description :
+    ...    主要測試醫療機構新增兩筆資料
+    ...    1. 使用者點擊左上角醫療機構維護
+    ...    2. 使用者按下新增按鈕
+    ...    3. 畫面上顯示醫療機構維護跳窗
+    ...    4. 使用者在跳窗中的欄位填寫所有資料
+    ...    5. 使用者按下新增按鈕完成建立一筆資料
+    ...    6. 再重複步驟 2 ~ 5一次
+    ...    7. 回到醫療機構畫面，點選測試資料第一和第二筆
+    ...    8. 按下刪除
+    ...
+    ...    Verify :
+    ...    1. 刪除時是否有顯是刪除兩筆資料資訊
+    ...    2. 若有因現存資料FK參考到此醫療機構導致無法DELETE刪除時，則異動<Basic_Hospital.active_flag>={0}
+    Log    Verify 測試刪除
+    Connect Database
+    Add Two Record In DB
+    ${Verify_Message}    Set Variable    是否確定刪除 2 筆資料 ?
+    Sleep    1
+    Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[1]/td[2]/div/img
+    Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[2]/td[2]/div/img
+    Click Element    ${ID_Delete_Button}
+    #Sleep    3
+    Wait Until Element Is Visible    ${ID_DeleteMessage_TextView}    ${G_Wait_For_Element_Timeout}
+    ${Get_DeleteMessage_TextView}=    Get Text    ${ID_DeleteMessage_TextView}
+    Log    畫面上顯示${Get_DeleteMessage_TextView}
+    Should Be Equal    ${Verify_Message}    ${Get_DeleteMessage_TextView}
+    Log    [365]點擊刪除
+    Click Element    ${ID_DeleteMessage_Yes_Button}
+    Sleep    3
+    ${queryBasic_Hospital_TestData_1}=    Set Variable    select * from Basic_Hospital where hospital_name ='${TestData_Organization_Name_1}' and addr='${TestData_Organization_Address_1}' and hospital_code='${TestData_System_Code_1}' and phone='${TestData_Contact_Phone_1}' and email='${TestData_Contact_Email_1}' and nhi_code='${TestData_Organization_Code_1}' and active_flag=1
+    ${queryBasic_Hospital_TestData_2}=    Set Variable    select * from Basic_Hospital where hospital_name ='${TestData_Organization_Name_2}' and addr='${TestData_Organization_Address_2}' and hospital_code='${TestData_System_Code_2}' and phone='${TestData_Contact_Phone_2}' and email='${TestData_Contact_Email_2}' and nhi_code='${TestData_Organization_Code_2}' and active_flag=1
+    Log    Verify 資料庫剛新增的兩筆資料是否被刪除成功
+    Check If Not Exists In Database    ${queryBasic_Hospital_TestData_1}
+    Check If Not Exists In Database    ${queryBasic_Hospital_TestData_2}
+    [Teardown]    Close All Browsers
+
+PopupWindow Update Function And Verify DB
+    [Documentation]    Test case Description :
+    ...    主要測試醫療機構新增兩筆資料
+    ...    1. 使用者點擊左上角醫療機構維護
+    ...    2. 使用者按下新增按鈕
+    ...    3. 畫面上顯示醫療機構維護跳窗
+    ...    4. 使用者在跳窗中的欄位填寫所有資料
+    ...    5. 使用者按下新增按鈕完成建立一筆資料
+    ...    6. 再重複步驟 2 ~ 5一次
+    ...    7. 回到醫療機構畫面，點選測試資料第二筆
+    ...    8. 顯示出跳窗
+    ...    9. 全部資料全部更新
+    ...    10. 按下確定按鈕
+    ...
+    ...    Verify :
+    ...    更新後的資料是否能正確存在DB中
+    Entry Main Page
+    Log    Verify 驗證醫療機構維護跳窗是否能更新
+    Fill Data on Update PopupWindow    ${TestData_System_Code_3}    ${TestData_Organization_Code_3}    ${TestData_Organization_Name_3}    ${TestData_Organization_Address_3}    ${TestData_Contact_Phone_3}    ${TestData_Contact_Email_3}
+    ...    ${TestData_Announcement_3}
+    #[Teardown]    Close All Browsers
+
+Remark
+    \    ${Organization_Address}=    Run keyword if    "${Organization_Address}"==""    SPACE Convert To None    ${Organization_Address}
+    \    ...    ELSE    No Convert    ${Organization_Address}
+    \    Append To List    ${UI_List}    ${Organization_Address}
+    \    ${Contact_Phone}=    Run keyword if    "${Contact_Phone}"==""    SPACE Convert To None    ${Contact_Phone}
+    \    ...    ELSE    No Convert    ${Contact_Phone}
+    \    Append To List    ${UI_List}    ${Contact_Phone}
+    \    ${Contact_Email}=    Run keyword if    "${Contact_Email}"==""    SPACE Convert To None    ${Contact_Email}
+    \    ...    ELSE    No Convert    ${Contact_Email}
+    \    Append To List    ${UI_List}    ${Contact_Email}
+
+*** Keywords ***
+Login System
+    Log    【Keywords】Login System
+    Open Browser and Login Automatically
+
+Entry Main Page
+    Log    【Keywords】Entry Main Page
+    Log    等待主畫面載入完成
+    Wait Until Element Is Visible    ${Entry_Button}    ${Wait_For_Element_15s_Timeout}
+    #Wait Until Element Is Visible    ${Entry_Button}    ${G_Wait_For_Element_Timeout}
+    Click Element    ${Entry_Button}
+    Sleep    ${Wait_For_Element_10s_Timeout}
+
+Entry Insert/Edit Page
+    Log    【Keywords】Entry Insert/Edit Page
+    Entry Main Page
+    Click Element    ${ID_Insert_Button}
+    Log    等待「醫療機構維護視窗」載入完成
+    Wait Until Element Is Visible    xpath=${XPATH_PopupWindow_Insert_Title}    ${Wait_For_Element_10s_Timeout}
+
+Query DB data by Nested loop
+    [Arguments]    ${DB_List}    ${x}    ${DML}
+    Log    【Keywords】Query DB data by Nested loop
+    Connect Database    #連線資料庫
+    ${queryResults}=    Query    ${DML}    #執行DML資料操作語言
+    ${Verify_List}    Convert To String    ${queryResults[0]}    #只取一列資料當代表
+    #用逗號分開字串(註解不要寫在有=的句子後面)
+    ${result} =    Split String    ${Verify_List}
+    ${ColumnTotal}    Get Length    ${result}    #可以取得長度=欄位數
+    Log    取得列資料的欄位數${ColumnTotal}
+    : FOR    ${y}    IN RANGE    0    ${ColumnTotal}
+    \    ${Verify_List}    Convert To String    ${queryResults[${x}][${y}]}
+    \    Append To List    ${DB_List}    ${Verify_List}
+    [Return]    ${DB_List}
+
+SPACE Convert To None
+    [Arguments]    ${OriginString}
+    Log    【Keywords】SPACE Convert To None
+    #當沒有值時，DB呈現{null}，用RIDE抓出來呈現"None"．所以畫面上的值要None再跟DB比
+    ${Return_None}=    Convert To String    None
+    [Return]    ${Return_None}
+
+No Convert
+    [Arguments]    ${OriginString}
+    Log    【Keywords】No Convert
+    [Return]    ${OriginString}
+
+Fill Data on Update PopupWindow
+    [Arguments]    ${Input_System_Code}    ${Input_Organization_Code}    ${Input_Organization_Name}    ${Input_Organization_Address}    ${Input_Contact_Phone}    ${Input_Contact_Email}
+    ...    ${Input_Announcement}
+    Log    【Keywords】Fill Data on Update PopupWindow
+    Log    Verify 驗證醫療機構維護跳窗是否能更新
+    Connect Database
+    #必須新增資料再測試因為,第二次開啟修改視窗xpath和id會變
+    Add Two Record In DB
+    Double Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[2]/td[1]/div
+    Log    [464]等html/body/div[11]/div[2]/div/div/span/div/table[1]/tbody/tr/td[2]/input出現
+    Wait Until Element Is Visible    xpath=html/body/div[11]/div[2]/div/div/span/div/table[1]/tbody/tr/td[2]/input    ${G_Wait_For_Element_Timeout}
+    Log    打勾「提供健檢」
+    Click Element    xpath=html/body/div[11]/div[2]/div/div/span/div/table[1]/tbody/tr/td[2]/input
+    Log    輸入「系統內碼」
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[3]/tbody/tr/td[2]/input    ${Input_System_Code}
+    Log    輸入「機構代碼」
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[4]/tbody/tr/td[2]/input    ${Input_Organization_Code}
+    Log    輸入「機構名稱」
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[5]/tbody/tr/td[2]/input    ${Input_Organization_Name}
+    Log    輸入「機構地址」
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[6]/tbody/tr/td[2]/textarea    ${Input_Organization_Address}
+    Log    輸入「聯絡電話」
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[7]/tbody/tr/td[2]/textarea    ${Input_Contact_Phone}
+    Log    輸入「連絡信箱」
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[8]/tbody/tr/td[2]/textarea    ${Input_Contact_Email}
+    Log    輸入「公告訊息」
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[9]/tbody/tr/td[2]/textarea    ${Input_Announcement}
+    Click Element    xpath=html/body/div[11]/div[3]/div/div/div[2]/div/a/span[1]
+    Sleep    2
+    #這裡不檢查「提供健檢」條件了，因無法有效確定是checked還是uncheck
+    ${queryBasic_Hospital_TestData_3}=    Set Variable    select * from Basic_Hospital where hospital_name ='${Input_Organization_Name}' and addr='${Input_Organization_Address}' and hospital_code='${Input_System_Code}' and phone='${Input_Contact_Phone}' and email='${Input_Contact_Email}' and nhi_code='${Input_Organization_Code}' and active_flag=1 and announcement='${Input_Announcement}'
+    Check If Exists In DataBase    ${queryBasic_Hospital_TestData_3}
+    [Teardown]    Close All Browsers
+
+Add Two Record In DB
+    Log    【Keywords】Add Two Record In DB
+    Log    先清空測試資料(因此測試案例需要N次)，若有因現存資料FK參考到此醫療機構將導致無法DELETE刪除
+    Execute Sql String    ${Delete_Basic_Hospital_TestData}
+    Entry Insert/Edit Page
+    Log    開始填入資料
+    Click Element    xpath=${XPATH_PopupWindow_Insert_Support_Check_Healty_Checkobx}
+    Log    輸入TestData_System_Code_1
+    Input Text    xpath=${XPATH_PopupWindow_Insert_System_Code_EditText}    ${TestData_System_Code_1}
+    Log    輸入TestData_Organization_Code_1
+    Input Text    xpath=${XPATH_PopupWindow_Insert_Organization_Code_EditText}    ${TestData_Organization_Code_1}
+    Log    輸入TestData_Organization_Name_1
+    Input Text    xpath=${XPATH_PopupWindow_Insert_Organization_Name_EditText}    ${TestData_Organization_Name_1}
+    Log    輸入TestData_Organization_Address_1
+    Input Text    xpath=${XPATH_PopupWindow_Insert_Organization_Address_EditText}    ${TestData_Organization_Address_1}
+    Log    輸入TestData_Contact_Phone_1
+    Input Text    xpath=${XPATH_PopupWindow_Insert_Contact_Phone_EditText}    ${TestData_Contact_Phone_1}
+    Log    輸入TestData_Contact_Email_1
+    Input Text    xpath=${XPATH_PopupWindow_Insert_Contact_Email_EditText}    ${TestData_Contact_Email_1}
+    Log    輸入TestData_Announcement_1
+    Input Text    xpath=${XPATH_PopupWindow_Insert_Announcement_EditText}    ${TestData_Announcement_1}
+    Click Element    xpath=${XPATH_PopupWindow_Insert_Insert_Button}
+    Sleep    2
+    Log    [486]click新增開啟視窗
+    Click Element    ${ID_Insert_Button}
+    Sleep    2
+    #這裡要用第二種寫法是因,第二次開啟XPATH會變.....
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[2]/tbody/tr/td[2]/input    ${TestData_System_Code_2}
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[3]/tbody/tr/td[2]/input    ${TestData_Organization_Code_2}
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[4]/tbody/tr/td[2]/input    ${TestData_Organization_Name_2}
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[5]/tbody/tr/td[2]/textarea    ${TestData_Organization_Address_2}
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[6]/tbody/tr/td[2]/textarea    ${TestData_Contact_Phone_2}
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[7]/tbody/tr/td[2]/textarea    ${TestData_Contact_Email_2}
+    Input Text    xpath=html/body/div[11]/div[2]/div/div/span/div/table[8]/tbody/tr/td[2]/textarea    ${TestData_Announcement_2}
+    Click Element    xpath=html/body/div[11]/div[3]/div/div/div[1]/div/a/span[1]
+    Sleep    2
+    Log    完成兩筆資料新增
