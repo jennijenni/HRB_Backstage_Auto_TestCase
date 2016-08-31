@@ -178,8 +178,6 @@ Verify Health_Check_Big_Item Data with DB
     ${Health_Checkup_Big_Item_UI_List}    Create List
     ${Get_Health_Checkup_Big_Item_Count}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div[1]/div/div[3]/div[4]/div/table/tbody/tr
     Log    取得健檢大項資料筆數：${Get_Health_Checkup_Big_Item_Count}
-    ${Get_Health_Check_Detail_Item_Count}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div[1]/div/div[5]/div[4]/div/table/tbody/tr
-    Log    取得健檢細項資料筆數：${Get_Health_Check_Detail_Item_Count}
     #
     : FOR    ${INDEX}    IN RANGE    1    ${Get_Health_Checkup_Big_Item_Count}+1
     \    Log    ${INDEX}
@@ -204,15 +202,16 @@ Verify Health_Check_Big_Item Data with DB
 
 Verify Health_Check_Detail_Item Data with DB
     Entry Main Page
-    ${Health_Checkup_Big_Item_UI_List}    Create List
+    #${Health_Checkup_Big_Item_UI_List}    Create List
     ${Get_Health_Checkup_Big_Item_Count}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div[1]/div/div[3]/div[4]/div/table/tbody/tr
     Log    取得健檢大項資料筆數：${Get_Health_Checkup_Big_Item_Count}
-    : FOR    ${INDEX}    IN RANGE    1    2
-    \    #    ${Get_Health_Checkup_Big_Item_Count}+1
-    \    Log    ${INDEX}
+    : FOR    ${INDEX}    IN RANGE    1    ${Get_Health_Checkup_Big_Item_Count}+1
+    \    Log    進行健檢大項查詢：${INDEX}/${Get_Health_Checkup_Big_Item_Count}
     \    Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[1]/div
     \    ${Health_Check_Big_Item_Code}=    Get Text    xpath=html/body/div[5]/div[2]/div[1]/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[4]/div
+    \    Log    大項代碼是${Health_Check_Big_Item_Code}, 用id找出［健檢細項］區塊的資料
     \    ${Health_Check_Big_Item_ID}=    Set Variable    SELECT id FROM Basic_CheckGroup WHERE group_code = '${Health_Check_Big_Item_Code}'
+    \    Sleep    2
     \    Query Health_Check_Detail_Item Data with DB    ${Health_Check_Big_Item_ID}
 
 PopupWindow Health_Check_Big_Item Insert UI
@@ -313,7 +312,62 @@ Test DB zh-tw
     ${C}    Convert To String    ${Result_test[0][1]}#Áx¯Ø¨t²Î
     Log    -----------------
 
-ccc
+Test-1
+    Entry Main Page
+    Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[1]/td[1]/div
+    ${Get_Health_Check_Detail_Item_Count1}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr
+    Log    ------------------其健檢細項資料筆數：${Get_Health_Check_Detail_Item_Count1}------------------
+    Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[2]/td[1]/div
+    sleep    0
+    ${Get_Health_Check_Detail_Item_Count2}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr
+    Log    ------------------其健檢細項資料筆數：${Get_Health_Check_Detail_Item_Count2}------------------
+    Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[3]/td[1]/div
+    sleep    0
+    ${Get_Health_Check_Detail_Item_Count3}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr
+    Log    ------------------其健檢細項資料筆數：${Get_Health_Check_Detail_Item_Count3}------------------
+
+Test-2
+    Entry Main Page
+    ${Get_Health_Checkup_Big_Item_Count}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div[1]/div/div[3]/div[4]/div/table/tbody/tr
+    Log    取得健檢大項資料筆數：${Get_Health_Checkup_Big_Item_Count}
+    : FOR    ${INDEX}    IN RANGE    1    ${Get_Health_Checkup_Big_Item_Count}+1
+    \    Log    第${INDEX}筆健檢大項
+    \    Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[1]/div
+    \    ${Health_Check_Big_Item_Code}=    Get Text    xpath=html/body/div[5]/div[2]/div[1]/div/div[3]/div[4]/div/table/tbody/tr[${Index}]/td[4]/div
+    \    Log    的大項代碼是${Health_Check_Big_Item_Code}
+    \    Sleep    2
+    \    ${Get_Health_Check_Detail_Item_Count}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div[1]/div/div[5]/div[4]/div/table/tbody/tr
+    \    Log    ------------------其健檢細項資料筆數：${Get_Health_Check_Detail_Item_Count}------------------
+
+Test-3
+    Entry Main Page
+    Click Element    xpath=html/body/div[5]/div[2]/div/div/div[3]/div[4]/div/table/tbody/tr[5]/td[1]/div
+    Sleep    2
+    ${G}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[4]/td[11]/div
+    Log    ***1***${G}
+    ${List1}    Create List
+    ${List2}    Create List
+    Append To List    ${List1}    ${G}
+    Log    ***2***${List1}
+    #${G}=    Replace String    ${G}    \n    ''
+    #Log    ${G}
+    #Connect Database
+    #${select_Basic_CheckGroup}=    Set Variable    SELECT item_desc FROM Basic_CheckItem WHERE id = '59BEE2A38A29D06AE040860A5082164A'
+    #${queryResults}=    Query    ${select_Basic_CheckGroup}
+    #Log    ***1***${queryResults}
+    #Log    ***2***${queryResults[0][0]}
+    #${String1}    Convert To String    ${queryResults}
+    #${G}=    Replace String    ${String1}    \n    ''
+    #Log    ***2***${G}
+    #${String2}    Convert To String    ${queryResults[0][0]}
+    #Log    ***3***${String1}
+    #Log    ***4***${String2}
+    #Append To List    ${List1}    ${queryResults}
+    #Append To List    ${List2}    ${queryResults[0][0]}
+    #Log    ***5***${List1}
+    #Log    ***6***${List2}
+
+Test-4
     #
     ${Query_Basic_Organ}=    Set Variable    select TOP 29 Organ_name from Basic_Organ where active_flag='1' order by organ_code asc
     ${Result}    Query    ${Query_Basic_Organ}
@@ -355,11 +409,12 @@ Query DB data by Nested loop
     [Arguments]    ${queryResults}    ${x}    ${DB_List}
     ${Verify_List}    Convert To String    ${queryResults[0]}    #只取一列資料當代表
     #用逗號分開字串(註解不要寫在有=的句子後面)
-    ${result} =    Split String    ${Verify_List}
+    ${result} =    Split String    ${Verify_List}    ,
     ${ColumnTotal}    Get Length    ${result}    #可以取得長度=欄位數
-    Log    取得列資料的欄位數${ColumnTotal}
+    Log    ------------------取得列資料的欄位數${ColumnTotal}------------------
     : FOR    ${y}    IN RANGE    0    ${ColumnTotal}
     \    ${String}    Convert To String    ${queryResults[${x}][${y}]}
+    \    #    ${String}    Strip String    ${String}
     \    Append To List    ${DB_List}    ${String}
     [Return]    ${DB_List}
 
@@ -367,30 +422,30 @@ Query Health_Check_Detail_Item Data with DB
     [Arguments]    ${DML}
     ${Health_Check_Detail_Item_UI_List}    Create List
     ${Get_Health_Check_Detail_Item_Count}    Get Matching Xpath Count    xpath=html/body/div[5]/div[2]/div[1]/div/div[5]/div[4]/div/table/tbody/tr
-    Log    取得健檢細項資料筆數：${Get_Health_Check_Detail_Item_Count}
+    Log    ------------------取得健檢細項資料筆數：${Get_Health_Check_Detail_Item_Count}------------------
     : FOR    ${INDEX}    IN RANGE    1    ${Get_Health_Check_Detail_Item_Count}+1
     \    Log    ${INDEX}
-    \    #    ${GetText_Health_Check_Detail_Item_LOINC_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[4]/div
-    \    #    ${GetText_Health_Check_Detail_Item_Code_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[5]/div
+    \    ${GetText_Health_Check_Detail_Item_LOINC_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[4]/div
+    \    ${GetText_Health_Check_Detail_Item_Code_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[5]/div
     \    ${GetText_Health_Check_Detail_Item_DetailCode_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[6]/div
     \    ${GetText_Health_Check_Detail_Item_DetailName_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[7]/div
-    \    #    ${GetText_Health_Check_Detail_Item_WorkerItem_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[8]/div
+    \    ${GetText_Health_Check_Detail_Item_WorkerItem_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[8]/div
     \    #    ${GetText_Health_Check_Detail_Item_DataType_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[9]/div
     \    #    ${GetText_Health_Check_Detail_Item_OrgSystem_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[10]/div
     \    #    ${GetText_Health_Check_Detail_Item_Description_Column}=    Get Text    xpath=html/body/div[5]/div[2]/div/div/div[5]/div[4]/div/table/tbody/tr[${INDEX}]/td[11]/div
-    \    #    ${GetText_Health_Check_Detail_Item_LOINC_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_LOINC_Column}
-    \    #    ${GetText_Health_Check_Detail_Item_Code_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_Code_Column}
+    \    ${GetText_Health_Check_Detail_Item_LOINC_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_LOINC_Column}
+    \    ${GetText_Health_Check_Detail_Item_Code_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_Code_Column}
     \    ${GetText_Health_Check_Detail_Item_DetailCode_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_DetailCode_Column}
     \    ${GetText_Health_Check_Detail_Item_DetailName_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_DetailName_Column}
-    \    #    ${GetText_Health_Check_Detail_Item_WorkerItem_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_WorkerItem_Column}
+    \    ${GetText_Health_Check_Detail_Item_WorkerItem_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_WorkerItem_Column}
     \    #    ${GetText_Health_Check_Detail_Item_DataType_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_DataType_Column}
     \    #    ${GetText_Health_Check_Detail_Item_OrgSystem_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_OrgSystem_Column}
     \    #    ${GetText_Health_Check_Detail_Item_Description_NoSpace} =    Strip String    ${GetText_Health_Check_Detail_Item_Description_Column}
-    \    #    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_LOINC_NoSpace}
-    \    #    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_Code_NoSpace}
+    \    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_LOINC_NoSpace}
+    \    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_Code_NoSpace}
     \    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_DetailCode_NoSpace}
     \    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_DetailName_NoSpace}
-    \    #    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_WorkerItem_NoSpace}
+    \    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_WorkerItem_NoSpace}
     \    #    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_DataType_NoSpace}
     \    #    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_OrgSystem_NoSpace}
     \    #    Append To List    ${Health_Check_Detail_Item_UI_List}    ${GetText_Health_Check_Detail_Item_Description_NoSpace}
@@ -400,11 +455,11 @@ Query Health_Check_Detail_Item Data with DB
     ${Health_Check_Big_Item_ID}    Convert To String    ${queryResults[0][0]}
     ${Health_Check_Detail_Item_DB_List}    Create List
     Log    [!!!!!!!!!!]參數${Health_Check_Big_Item_ID}
-    #    現在DB欄位loinc_code, nhi_code, is_labor, item_desc有時"None"有時"", 無法進行判斷
-    #    ${select_Basic_CheckGroup}=    Set Variable    SELECT DISTINCT loinc_code, nhi_code, item_code, item_name_zh_tw, is_labor, item_desc FROM Basic_CheckItem, Basic_CheckGroup WHERE group_id = '${Health_Check_Big_Item_ID}' AND Basic_CheckItem.active_flag = '1'
-    #    已按item_code ASC排序
-    #暫消${select_Basic_CheckGroup}=    Set Variable    SELECT DISTINCT item_code, item_name_zh_tw FROM Basic_CheckItem, Basic_CheckGroup WHERE group_id = '${Health_Check_Big_Item_ID}' AND Basic_CheckItem.active_flag = '1' ORDER BY item_code ASC
-    ${select_Basic_CheckGroup}=    Set Variable    select TOP 29 Organ_name from Basic_Organ where active_flag='1' order by organ_code asc
+    #    健檢細項第一頁最多25筆資料
+    #    「資料類型」來自額外資料表，先不列入比對
+    #    「器官系統」來自額外資料表，先不列入比對
+    #    「說明」DB Append To List後存在換行字元\r\n，Web卻沒有\r\n，先不列入比對
+    ${select_Basic_CheckGroup}=    Set Variable    SELECT Top 25 (CASE WHEN loinc_code IS NULL THEN '' ELSE loinc_code END) LOINC,(CASE WHEN nhi_code IS NULL THEN '' ELSE nhi_code END) 健保碼,(CASE WHEN item_code IS NULL THEN '' ELSE item_code END) 細項代碼,(CASE WHEN item_name_zh_tw IS NULL THEN '' ELSE item_name_zh_tw END) 細項名稱,(CASE WHEN is_labor IS NULL THEN '' ELSE is_labor END) 勞檢項目 FROM Basic_CheckItem WHERE group_id = '${Health_Check_Big_Item_ID}' AND Basic_CheckItem.active_flag = '1' ORDER BY item_code ASC
     ${queryResults}=    Query    ${select_Basic_CheckGroup}
     ${RowCount}    Row Count    ${select_Basic_CheckGroup}
     : FOR    ${x}    IN RANGE    0    ${RowCount}
